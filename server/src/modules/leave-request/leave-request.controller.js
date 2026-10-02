@@ -62,6 +62,15 @@ export async function getRequestById(req, res, next) {
   }
 }
 
+export async function updateRequest(req, res, next) {
+  try {
+    const request = await leaveRequestService.updateRequest(req.params.id, req.user.id, req.body);
+    sendSuccess(res, 'Leave request updated and resubmitted', request);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function cancelRequest(req, res, next) {
   try {
     const request = await leaveRequestService.cancelRequest(req.params.id, req.user.id);

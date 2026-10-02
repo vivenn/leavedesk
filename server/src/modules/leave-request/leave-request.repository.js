@@ -5,7 +5,10 @@ const BASE_SELECT = `
          lr.num_days, lr.reason, lr.attachment_url, lr.status,
          lr.financial_year, lr.created_at, lr.updated_at,
          lt.leave_type_name,
-         u.first_name, u.last_name, u.email, u.manager_id
+         u.first_name, u.last_name, u.email, u.manager_id,
+         (SELECT la.remarks FROM leave_approvals la
+          WHERE la.leave_request_id = lr.id
+          ORDER BY la.created_at DESC LIMIT 1) AS last_remarks
   FROM leave_requests lr
   JOIN leave_types lt ON lr.leave_type_id = lt.id
   JOIN users u ON lr.user_id = u.id
@@ -23,6 +26,7 @@ function mapRow(row) {
     reason: row.reason,
     attachmentUrl: row.attachment_url,
     status: row.status,
+    lastRemarks: row.last_remarks,
     financialYear: row.financial_year,
     managerId: row.manager_id,
     user: {
@@ -121,6 +125,16 @@ export async function create({ userId, leaveTypeId, startDate, endDate, numDays,
     [userId, leaveTypeId, startDate, endDate, numDays, reason, attachmentUrl || null, financialYear]
   );
   return rows[0].id;
+}
+
+export async function update(id, { leaveTypeId, startDate, endDate, numDays, reason, attachmentUrl, financialYear, status }) {
+  await pool.query(
+    `UPDATE leave_requests
+     SET leave_type_id = $1, start_date = $2, end_date = $3, num_days = $4, reason = $5,
+         attachment_url = $6, financial_year = $7, status = $8, updated_at = NOW()
+     WHERE id = $9`,
+    [leaveTypeId, startDate, endDate, numDays, reason, attachmentUrl || null, financialYear, status, id]
+  );
 }
 
 export async function updateStatus(id, status) {

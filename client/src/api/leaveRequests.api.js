@@ -23,3 +23,7 @@ export function getRequestById(id) {
 export function cancelRequest(id) {
   return http.patch(`/leave-requests/${id}/cancel`).then((r) => r.data);
 }
+
+export function updateRequest(id, payload) {
+  return http.put(`/leave-requests/${id}`, payload).then((r) => r.data);
+}

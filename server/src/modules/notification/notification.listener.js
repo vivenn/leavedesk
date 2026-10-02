@@ -79,6 +79,21 @@ eventBus.on(EVENTS.LEAVE_CHANGES_REQUESTED, async (payload) => {
   }
 });
 
+eventBus.on(EVENTS.LEAVE_RESUBMITTED, async (payload) => {
+  try {
+    if (!payload.managerId) return;
+    await notifService.createNotification({
+      recipientId: payload.managerId,
+      notificationType: NOTIFICATION_TYPE.LEAVE_RESUBMITTED,
+      leaveRequestId: payload.leaveRequestId,
+      title: 'Leave Request Updated',
+      message: `Updated ${payload.leaveTypeName} request (${payload.numDays} days) from ${payload.startDate} to ${payload.endDate} is waiting for review`
+    });
+  } catch (err) {
+    console.error('Notification (leave:resubmitted) failed:', err.message);
+  }
+});
+
 eventBus.on(EVENTS.LEAVE_CANCELLED, async (payload) => {
   try {
     await notifService.createNotification({

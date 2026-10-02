@@ -76,6 +76,21 @@ eventBus.on(EVENTS.LEAVE_CHANGES_REQUESTED, async (payload) => {
   }
 });
 
+eventBus.on(EVENTS.LEAVE_RESUBMITTED, async (payload) => {
+  try {
+    await auditService.logAction({
+      userId: payload.userId,
+      actionType: AUDIT_ACTION.LEAVE_RESUBMITTED,
+      entityType: 'LeaveRequest',
+      entityId: payload.leaveRequestId,
+      oldValues: { status: payload.previousStatus },
+      newValues: { status: 'PENDING', numDays: payload.numDays, startDate: payload.startDate, endDate: payload.endDate }
+    });
+  } catch (err) {
+    console.error('Audit (leave:resubmitted) failed:', err.message);
+  }
+});
+
 eventBus.on(EVENTS.LEAVE_CANCELLED, async (payload) => {
   try {
     await auditService.logAction({

@@ -14,6 +14,7 @@ router.get('/', validateQuery(listLeaveRequestsQuerySchema), leaveRequestControl
 router.get('/team', authorize(ROLES.MANAGER, ROLES.ADMIN), leaveRequestController.getTeamRequests);
 router.get('/all', authorize(ROLES.ADMIN), validateQuery(listLeaveRequestsQuerySchema), leaveRequestController.getAllRequests);
 router.get('/:id', leaveRequestController.getRequestById);
+router.put('/:id', validate(createLeaveRequestSchema), leaveRequestController.updateRequest);
 router.patch('/:id/cancel', leaveRequestController.cancelRequest);
 
 export default router;

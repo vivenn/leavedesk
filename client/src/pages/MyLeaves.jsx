@@ -3,6 +3,7 @@ import { getMyRequests, cancelRequest } from '../api/leaveRequests.api';
 import { StatusBadge } from '../components/StatusBadge';
 import { Card } from '../components/Card';
 import { apiMessage } from '../api/http';
+import { EditLeaveModal } from '../components/EditLeaveModal';
 
 function formatDate(value) {
   if (!value) return '—';
@@ -11,6 +12,8 @@ function formatDate(value) {
 
 const STATUS_FILTERS = ['', 'PENDING', 'ESCALATED', 'CHANGES_REQUESTED', 'MANAGER_APPROVED', 'APPROVED', 'REJECTED', 'CANCELLED'];
 const NON_CANCELLABLE = new Set(['CANCELLED', 'REJECTED']);
+const EDITABLE = new Set(['PENDING', 'CHANGES_REQUESTED']);
+const SHOW_REMARKS = new Set(['CHANGES_REQUESTED', 'REJECTED', 'ESCALATED']);
 
 export function MyLeaves() {
   const [requests, setRequests] = useState([]);
@@ -18,6 +21,7 @@ export function MyLeaves() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState(null);
+  const [editing, setEditing] = useState(null);
 
   function load() {
     setLoading(true);
@@ -44,7 +48,7 @@ export function MyLeaves() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-semibold text-slate-900">My Leave History</h1>
         <select
           value={status}
@@ -67,7 +71,8 @@ export function MyLeaves() {
         ) : requests.length === 0 ? (
           <p className="text-sm text-slate-400">No leave requests found.</p>
         ) : (
-          <table className="w-full text-left text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-xs tracking-wide text-slate-500 uppercase">
                 <th className="pb-2 font-medium">Leave type</th>
@@ -91,8 +96,20 @@ export function MyLeaves() {
                   </td>
                   <td className="py-3">
                     <StatusBadge status={req.status} />
+                    {SHOW_REMARKS.has(req.status) && req.lastRemarks && (
+                      <p className="mt-1 max-w-[14rem] text-xs text-slate-500">“{req.lastRemarks}”</p>
+                    )}
                   </td>
-                  <td className="py-3 text-right">
+                  <td className="space-x-3 py-3 text-right whitespace-nowrap">
+                    {EDITABLE.has(req.status) && (
+                      <button
+                        type="button"
+                        onClick={() => setEditing(req)}
+                        className="text-xs font-medium text-brand-600 hover:underline"
+                      >
+                        {req.status === 'CHANGES_REQUESTED' ? 'Update' : 'Edit'}
+                      </button>
+                    )}
                     {!NON_CANCELLABLE.has(req.status) && (
                       <button
                         type="button"
@@ -108,8 +125,20 @@ export function MyLeaves() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </Card>
+
+      {editing && (
+        <EditLeaveModal
+          request={editing}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
+            load();
+          }}
+        />
+      )}
     </div>
   );
 }

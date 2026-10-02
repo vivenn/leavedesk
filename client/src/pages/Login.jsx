@@ -6,7 +6,7 @@ import { apiMessage } from '../api/http';
 export function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('admin@leavedesk.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -73,9 +73,9 @@ export function Login() {
           >
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
-          <p className="text-center text-xs text-slate-400">
-            Seeded admin: admin@leavedesk.com / admin123
-          </p>
+          {import.meta.env.DEV && (
+            <p className="text-center text-xs text-slate-400">Local dev seed: admin@leavedesk.com / admin123</p>
+          )}
         </form>
       </div>
     </div>

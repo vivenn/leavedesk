@@ -55,7 +55,7 @@ export async function getAllRequests(req, res, next) {
 
 export async function getRequestById(req, res, next) {
   try {
-    const request = await leaveRequestService.getRequestById(req.params.id);
+    const request = await leaveRequestService.getRequestById(req.params.id, req.user);
     sendSuccess(res, 'Leave request fetched', request);
   } catch (err) {
     next(err);

@@ -1,6 +1,7 @@
 import * as approvalRepo from './approval.repository.js';
 import * as leaveRequestRepo from '../leave-request/leave-request.repository.js';
 import * as balanceService from '../leave-balance/leave-balance.service.js';
+import * as leaveRequestService from '../leave-request/leave-request.service.js';
 import { NotFoundError } from '../../shared/errors/app-error.js';
 import { LEAVE_REQUEST_STATUS, APPROVAL_STATUS, APPROVER_ROLE, ROLES, EVENTS } from '../../config/constants.js';
 import { resolveTransition, APPROVAL_ACTION } from './approval.workflow.js';
@@ -104,9 +105,8 @@ function emitTransitionEvent(request, approver, approverRole, transition, remark
   }
 }
 
-export async function getApprovalHistory(leaveRequestId) {
-  const request = await leaveRequestRepo.findById(leaveRequestId);
-  if (!request) throw new NotFoundError('Leave request not found');
+export async function getApprovalHistory(leaveRequestId, viewer) {
+  const request = await leaveRequestService.getRequestById(leaveRequestId, viewer);
 
   const approvals = await approvalRepo.findByLeaveRequest(leaveRequestId);
   return { ...request, approvals };

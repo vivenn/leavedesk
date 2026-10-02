@@ -58,7 +58,7 @@ export async function requestChanges(req, res, next) {
 
 export async function getApprovalHistory(req, res, next) {
   try {
-    const result = await approvalService.getApprovalHistory(req.params.leaveRequestId);
+    const result = await approvalService.getApprovalHistory(req.params.leaveRequestId, req.user);
     sendSuccess(res, 'Approval history fetched', result);
   } catch (err) {
     next(err);

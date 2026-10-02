@@ -5,7 +5,7 @@ import * as userRepo from '../user/user.repository.js';
 import { calculateLeaveDays } from './sandwich-leave.helper.js';
 import { NotFoundError, ValidationError, ConflictError } from '../../shared/errors/app-error.js';
 import { getFinancialYear } from '../../shared/utils/date.js';
-import { LEAVE_REQUEST_STATUS, EVENTS } from '../../config/constants.js';
+import { LEAVE_REQUEST_STATUS, EVENTS, ROLES } from '../../config/constants.js';
 import eventBus from '../../shared/event-bus.js';
 
 export async function applyLeave(userId, data) {
@@ -119,9 +119,16 @@ export async function getAllRequests(query) {
   return leaveRequestRepo.findAll(query);
 }
 
-export async function getRequestById(id) {
+// Owner, the owner's manager and administrators may view a request.
+// Others get a 404 so request ids cannot be probed.
+export async function getRequestById(id, viewer) {
   const request = await leaveRequestRepo.findById(id);
-  if (!request) throw new NotFoundError('Leave request not found');
+  const canView = request && (
+    viewer.role === ROLES.ADMIN ||
+    request.userId === viewer.id ||
+    request.managerId === viewer.id
+  );
+  if (!canView) throw new NotFoundError('Leave request not found');
   return request;
 }
 

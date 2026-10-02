@@ -3,7 +3,8 @@ const requiredEnvVars = [
   'DB_PORT',
   'DB_NAME',
   'DB_USER',
-  'DB_PASSWORD'
+  'DB_PASSWORD',
+  'JWT_SECRET'
 ];
 
 export function validateEnv() {

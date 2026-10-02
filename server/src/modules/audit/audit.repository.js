@@ -40,7 +40,8 @@ export async function findAll({ limit, offset, userId, actionType, entityType, f
   if (actionType) { conditions.push(`al.action_type = $${idx++}`); params.push(actionType); }
   if (entityType) { conditions.push(`al.entity_type = $${idx++}`); params.push(entityType); }
   if (fromDate) { conditions.push(`al.created_at >= $${idx++}`); params.push(fromDate); }
-  if (toDate) { conditions.push(`al.created_at <= $${idx++}`); params.push(toDate); }
+  // toDate is a calendar day, so include everything up to the end of it
+  if (toDate) { conditions.push(`al.created_at < (CAST($${idx++} AS date) + INTERVAL '1 day')`); params.push(toDate); }
 
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 

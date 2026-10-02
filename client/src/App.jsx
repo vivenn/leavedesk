@@ -14,6 +14,7 @@ import { Departments } from './pages/admin/Departments';
 import { LeaveTypes } from './pages/admin/LeaveTypes';
 import { Reports } from './pages/admin/Reports';
 import { LeaveBalances } from './pages/admin/LeaveBalances';
+import { AuditLogs } from './pages/admin/AuditLogs';
 import { ROLES } from './context/roles';
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/admin/leave-types" element={<LeaveTypes />} />
             <Route path="/admin/leave-balances" element={<LeaveBalances />} />
             <Route path="/admin/reports" element={<Reports />} />
+            <Route path="/admin/audit-logs" element={<AuditLogs />} />
           </Route>
         </Route>
       </Route>

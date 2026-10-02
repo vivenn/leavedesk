@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { to: '/admin/leave-types', label: 'Leave Types', roles: [ROLES.ADMIN] },
   { to: '/admin/leave-balances', label: 'Leave Balances', roles: [ROLES.ADMIN] },
   { to: '/admin/reports', label: 'Reports', roles: [ROLES.ADMIN] },
+  { to: '/admin/audit-logs', label: 'Audit Logs', roles: [ROLES.ADMIN] },
 ];
 
 export function Layout() {

@@ -105,6 +105,21 @@ eventBus.on(EVENTS.LEAVE_CANCELLED, async (payload) => {
   }
 });
 
+eventBus.on(EVENTS.BLOOD_RELATION_USED, async (payload) => {
+  try {
+    await auditService.logAction({
+      userId: payload.userId,
+      actionType: AUDIT_ACTION.BLOOD_RELATION_USED,
+      entityType: 'BloodRelationLeave',
+      entityId: payload.recordId,
+      oldValues: { status: 'AVAILABLE' },
+      newValues: { status: 'CONSUMED', relation: payload.relation }
+    });
+  } catch (err) {
+    console.error('Audit (blood-relation:used) failed:', err.message);
+  }
+});
+
 eventBus.on(EVENTS.BALANCE_UPDATED, async (payload) => {
   try {
     await auditService.logBalanceChange({

@@ -6,6 +6,7 @@ function mapRow(row) {
     userId: row.user_id,
     relation: row.relation,
     isUsed: row.is_used,
+    status: row.is_used ? 'CONSUMED' : 'AVAILABLE',
     leaveRequestId: row.leave_request_id,
     usedDate: row.used_date,
     createdAt: row.created_at
@@ -38,11 +39,14 @@ export async function initialize(userId, relations) {
   }
 }
 
+// Only flips an unused record, so two concurrent requests cannot both consume it
 export async function markUsed(id, leaveRequestId) {
-  await pool.query(
+  const { rows } = await pool.query(
     `UPDATE blood_relation_leaves
      SET is_used = TRUE, leave_request_id = $1, used_date = CURRENT_DATE, updated_at = NOW()
-     WHERE id = $2`,
+     WHERE id = $2 AND is_used = FALSE
+     RETURNING *`,
     [leaveRequestId, id]
   );
+  return rows.length > 0 ? mapRow(rows[0]) : null;
 }

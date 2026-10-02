@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', roles: [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN], end: true },
   { to: '/apply-leave', label: 'Apply Leave', roles: [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN] },
   { to: '/my-leaves', label: 'My Leaves', roles: [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN] },
+  { to: '/blood-relation-leave', label: 'Blood Relation Leave', roles: [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN] },
   { to: '/holidays', label: 'Holidays', roles: [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN] },
   { to: '/approvals', label: 'Approvals', roles: [ROLES.MANAGER, ROLES.ADMIN] },
   { to: '/team', label: 'Team', roles: [ROLES.MANAGER, ROLES.ADMIN] },

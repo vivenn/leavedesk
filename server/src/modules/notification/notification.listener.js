@@ -1,7 +1,7 @@
 import eventBus from '../../shared/event-bus.js';
 import { EVENTS, NOTIFICATION_TYPE, ROLES } from '../../config/constants.js';
 import * as notifService from './notification.service.js';
-import * as userRepo from '../user/user.repository.js';
+import * as userService from '../user/user.service.js';
 
 eventBus.on(EVENTS.LEAVE_APPLIED, async (payload) => {
   try {
@@ -52,7 +52,7 @@ eventBus.on(EVENTS.LEAVE_REJECTED, async (payload) => {
 
 eventBus.on(EVENTS.LEAVE_ESCALATED, async (payload) => {
   try {
-    const adminIds = await userRepo.findActiveIdsByRole(ROLES.ADMIN);
+    const adminIds = await userService.getActiveUserIdsByRole(ROLES.ADMIN);
     await Promise.all(adminIds.map((recipientId) => notifService.createNotification({
       recipientId,
       notificationType: NOTIFICATION_TYPE.LEAVE_ESCALATED,
@@ -105,6 +105,20 @@ eventBus.on(EVENTS.LEAVE_CANCELLED, async (payload) => {
     });
   } catch (err) {
     console.error('Notification (leave:cancelled) failed:', err.message);
+  }
+});
+
+eventBus.on(EVENTS.BLOOD_RELATION_USED, async (payload) => {
+  try {
+    if (!payload.managerId) return;
+    await notifService.createNotification({
+      recipientId: payload.managerId,
+      notificationType: NOTIFICATION_TYPE.BLOOD_RELATION_USED,
+      title: 'Family Emergency Leave',
+      message: `${payload.employeeName} has taken blood relation leave (${payload.relation.replaceAll('_', ' ').toLowerCase()})`
+    });
+  } catch (err) {
+    console.error('Notification (blood-relation:used) failed:', err.message);
   }
 });
 

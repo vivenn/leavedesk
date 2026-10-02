@@ -55,3 +55,7 @@ export async function deleteUser(id) {
 export async function getTeam(managerId) {
   return userRepo.findTeam(managerId);
 }
+
+export async function getActiveUserIdsByRole(roleName) {
+  return userRepo.findActiveIdsByRole(roleName);
+}

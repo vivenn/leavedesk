@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard';
 import { ApplyLeave } from './pages/ApplyLeave';
 import { MyLeaves } from './pages/MyLeaves';
 import { Holidays } from './pages/Holidays';
+import { BloodRelationLeave } from './pages/BloodRelationLeave';
 import { Approvals } from './pages/Approvals';
 import { Team } from './pages/Team';
 import { Users } from './pages/admin/Users';
@@ -25,6 +26,7 @@ function App() {
           <Route path="/apply-leave" element={<ApplyLeave />} />
           <Route path="/my-leaves" element={<MyLeaves />} />
           <Route path="/holidays" element={<Holidays />} />
+          <Route path="/blood-relation-leave" element={<BloodRelationLeave />} />
 
           <Route element={<ProtectedRoute roles={[ROLES.MANAGER, ROLES.ADMIN]} />}>
             <Route path="/approvals" element={<Approvals />} />

@@ -146,3 +146,7 @@ Responses use one shape: `{ success, message, data, pagination? }`. Errors retur
 - **No year-end automation.** Carry-forward limits and Comp-Off expiry can be configured on leave types, but no scheduled job applies them; balances are adjusted manually.
 - **The login token is kept in `localStorage`.** A production deployment should move it to an httpOnly cookie.
 - **Date handling assumes the server runs in UTC or a timezone east of UTC.**
+
+## License
+
+[MIT](LICENSE)

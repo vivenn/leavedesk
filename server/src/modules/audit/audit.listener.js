@@ -137,7 +137,7 @@ eventBus.on(EVENTS.BALANCE_UPDATED, async (payload) => {
       entityType: 'LeaveBalance',
       entityId: payload.leaveBalanceId,
       oldValues: { balance: payload.previousBalance },
-      newValues: { balance: payload.newBalance, reason: payload.changeReason }
+      newValues: { balance: payload.newBalance, reason: payload.changeReason, note: payload.note }
     });
   } catch (err) {
     console.error('Audit (balance:updated) failed:', err.message);

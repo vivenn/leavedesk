@@ -4,8 +4,8 @@ export function getMyBalances() {
   return http.get('/leave-balances').then((r) => r.data.data);
 }
 
-export function getUserBalances(userId) {
-  return http.get(`/leave-balances/${userId}`).then((r) => r.data.data);
+export function getUserBalances(userId, financialYear) {
+  return http.get(`/leave-balances/${userId}`, { params: { financialYear } }).then((r) => r.data.data);
 }
 
 export function adjustBalance(userId, payload) {

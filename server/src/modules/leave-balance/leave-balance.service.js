@@ -48,6 +48,7 @@ export async function adjustBalance(userId, data, changedBy) {
     previousBalance,
     newBalance: data.availableBalance,
     changeReason: BALANCE_CHANGE_REASON.MANUAL_ADJUSTMENT,
+    note: data.reason,
     changedBy
   });
 

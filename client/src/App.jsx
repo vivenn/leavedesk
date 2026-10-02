@@ -13,6 +13,7 @@ import { Users } from './pages/admin/Users';
 import { Departments } from './pages/admin/Departments';
 import { LeaveTypes } from './pages/admin/LeaveTypes';
 import { Reports } from './pages/admin/Reports';
+import { LeaveBalances } from './pages/admin/LeaveBalances';
 import { ROLES } from './context/roles';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/admin/users" element={<Users />} />
             <Route path="/admin/departments" element={<Departments />} />
             <Route path="/admin/leave-types" element={<LeaveTypes />} />
+            <Route path="/admin/leave-balances" element={<LeaveBalances />} />
             <Route path="/admin/reports" element={<Reports />} />
           </Route>
         </Route>

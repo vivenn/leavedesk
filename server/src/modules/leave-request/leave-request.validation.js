@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { LEAVE_REQUEST_STATUS } from '../../config/constants.js';
 
 export const createLeaveRequestSchema = Joi.object({
   leaveTypeId: Joi.string().uuid().required(),
@@ -11,7 +12,7 @@ export const createLeaveRequestSchema = Joi.object({
 export const listLeaveRequestsQuerySchema = Joi.object({
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).max(100).default(10),
-  status: Joi.string().valid('PENDING', 'MANAGER_APPROVED', 'ADMIN_APPROVED', 'APPROVED', 'REJECTED', 'CANCELLED').allow(''),
+  status: Joi.string().valid(...Object.values(LEAVE_REQUEST_STATUS)).allow(''),
   leaveType: Joi.string().uuid().allow(''),
   fromDate: Joi.date().iso().allow(''),
   toDate: Joi.date().iso().allow(''),

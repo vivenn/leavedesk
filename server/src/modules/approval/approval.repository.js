@@ -49,7 +49,10 @@ export async function findPendingForManager(managerId, { limit, offset }) {
     `SELECT lr.id, lr.user_id, lr.leave_type_id, lr.start_date, lr.end_date,
             lr.num_days, lr.reason, lr.status, lr.financial_year, lr.created_at,
             lt.leave_type_name,
-            u.first_name, u.last_name, u.email
+            u.first_name, u.last_name, u.email,
+            (SELECT la.remarks FROM leave_approvals la
+             WHERE la.leave_request_id = lr.id
+             ORDER BY la.created_at DESC LIMIT 1) AS last_remarks
      FROM leave_requests lr
      JOIN leave_types lt ON lr.leave_type_id = lt.id
      JOIN users u ON lr.user_id = u.id
@@ -64,7 +67,7 @@ export async function findPendingForManager(managerId, { limit, offset }) {
 
 export async function findPendingForAdmin({ limit, offset }) {
   const { rows: countRows } = await pool.query(
-    `SELECT COUNT(*) FROM leave_requests WHERE status IN ('PENDING', 'MANAGER_APPROVED')`
+    `SELECT COUNT(*) FROM leave_requests WHERE status IN ('PENDING', 'MANAGER_APPROVED', 'ESCALATED')`
   );
   const total = parseInt(countRows[0].count, 10);
 
@@ -72,12 +75,15 @@ export async function findPendingForAdmin({ limit, offset }) {
     `SELECT lr.id, lr.user_id, lr.leave_type_id, lr.start_date, lr.end_date,
             lr.num_days, lr.reason, lr.status, lr.financial_year, lr.created_at,
             lt.leave_type_name,
-            u.first_name, u.last_name, u.email
+            u.first_name, u.last_name, u.email,
+            (SELECT la.remarks FROM leave_approvals la
+             WHERE la.leave_request_id = lr.id
+             ORDER BY la.created_at DESC LIMIT 1) AS last_remarks
      FROM leave_requests lr
      JOIN leave_types lt ON lr.leave_type_id = lt.id
      JOIN users u ON lr.user_id = u.id
-     WHERE lr.status IN ('PENDING', 'MANAGER_APPROVED')
-     ORDER BY lr.created_at
+     WHERE lr.status IN ('PENDING', 'MANAGER_APPROVED', 'ESCALATED')
+     ORDER BY (lr.status = 'ESCALATED') DESC, lr.created_at
      LIMIT $1 OFFSET $2`,
     [limit, offset]
   );

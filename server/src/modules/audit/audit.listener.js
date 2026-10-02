@@ -20,10 +20,11 @@ eventBus.on(EVENTS.LEAVE_APPROVED, async (payload) => {
   try {
     await auditService.logAction({
       userId: payload.approverId,
-      actionType: AUDIT_ACTION.LEAVE_APPROVED,
+      actionType: payload.isOverride ? AUDIT_ACTION.LEAVE_OVERRIDDEN : AUDIT_ACTION.LEAVE_APPROVED,
       entityType: 'LeaveRequest',
       entityId: payload.leaveRequestId,
-      newValues: { approverRole: payload.approverRole, finalApproval: payload.finalApproval }
+      oldValues: { status: payload.previousStatus },
+      newValues: { status: 'APPROVED', approverRole: payload.approverRole, finalApproval: payload.finalApproval, remarks: payload.remarks }
     });
   } catch (err) {
     console.error('Audit (leave:approved) failed:', err.message);
@@ -34,13 +35,44 @@ eventBus.on(EVENTS.LEAVE_REJECTED, async (payload) => {
   try {
     await auditService.logAction({
       userId: payload.approverId,
-      actionType: AUDIT_ACTION.LEAVE_REJECTED,
+      actionType: payload.isOverride ? AUDIT_ACTION.LEAVE_OVERRIDDEN : AUDIT_ACTION.LEAVE_REJECTED,
       entityType: 'LeaveRequest',
       entityId: payload.leaveRequestId,
-      newValues: { approverRole: payload.approverRole, remarks: payload.remarks }
+      oldValues: { status: payload.previousStatus },
+      newValues: { status: 'REJECTED', approverRole: payload.approverRole, remarks: payload.remarks }
     });
   } catch (err) {
     console.error('Audit (leave:rejected) failed:', err.message);
+  }
+});
+
+eventBus.on(EVENTS.LEAVE_ESCALATED, async (payload) => {
+  try {
+    await auditService.logAction({
+      userId: payload.approverId,
+      actionType: AUDIT_ACTION.LEAVE_ESCALATED,
+      entityType: 'LeaveRequest',
+      entityId: payload.leaveRequestId,
+      oldValues: { status: payload.previousStatus },
+      newValues: { status: 'ESCALATED', remarks: payload.remarks }
+    });
+  } catch (err) {
+    console.error('Audit (leave:escalated) failed:', err.message);
+  }
+});
+
+eventBus.on(EVENTS.LEAVE_CHANGES_REQUESTED, async (payload) => {
+  try {
+    await auditService.logAction({
+      userId: payload.approverId,
+      actionType: AUDIT_ACTION.CHANGES_REQUESTED,
+      entityType: 'LeaveRequest',
+      entityId: payload.leaveRequestId,
+      oldValues: { status: payload.previousStatus },
+      newValues: { status: 'CHANGES_REQUESTED', approverRole: payload.approverRole, remarks: payload.remarks }
+    });
+  } catch (err) {
+    console.error('Audit (leave:changes-requested) failed:', err.message);
   }
 });
 

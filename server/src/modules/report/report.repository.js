@@ -71,7 +71,7 @@ export async function getOverallSummary(month) {
     `SELECT
        COUNT(*) FILTER (WHERE lr.status IN ('APPROVED','MANAGER_APPROVED','ADMIN_APPROVED')) AS approved_count,
        COUNT(*) FILTER (WHERE lr.status = 'REJECTED') AS rejected_count,
-       COUNT(*) FILTER (WHERE lr.status = 'PENDING') AS pending_count,
+       COUNT(*) FILTER (WHERE lr.status IN ('PENDING','MANAGER_APPROVED','ESCALATED','CHANGES_REQUESTED')) AS pending_count,
        COUNT(*) FILTER (WHERE lr.status = 'CANCELLED') AS cancelled_count,
        COUNT(*) AS total_requests,
        COALESCE(SUM(lr.num_days) FILTER (WHERE lr.status IN ('APPROVED','MANAGER_APPROVED','ADMIN_APPROVED')), 0) AS total_days_taken

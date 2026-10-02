@@ -133,6 +133,16 @@ export async function softDelete(id) {
   );
 }
 
+export async function findActiveIdsByRole(roleName) {
+  const { rows } = await pool.query(
+    `SELECT u.id FROM users u
+     JOIN roles r ON u.role_id = r.id
+     WHERE r.role_name = $1 AND u.is_active = TRUE`,
+    [roleName]
+  );
+  return rows.map((row) => row.id);
+}
+
 export async function findTeam(managerId) {
   const { rows } = await pool.query(
     `${BASE_SELECT} WHERE u.manager_id = $1 AND u.is_active = TRUE ORDER BY u.first_name`,

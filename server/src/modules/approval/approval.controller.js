@@ -34,6 +34,28 @@ export async function rejectRequest(req, res, next) {
   }
 }
 
+export async function escalateRequest(req, res, next) {
+  try {
+    const result = await approvalService.escalateRequest(
+      req.params.leaveRequestId, req.user, req.body.remarks
+    );
+    sendSuccess(res, 'Leave request escalated to administrator', result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function requestChanges(req, res, next) {
+  try {
+    const result = await approvalService.requestChanges(
+      req.params.leaveRequestId, req.user, req.body.remarks
+    );
+    sendSuccess(res, 'Changes requested from employee', result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getApprovalHistory(req, res, next) {
   try {
     const result = await approvalService.getApprovalHistory(req.params.leaveRequestId);

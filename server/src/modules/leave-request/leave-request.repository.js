@@ -5,7 +5,7 @@ const BASE_SELECT = `
          lr.num_days, lr.reason, lr.attachment_url, lr.status,
          lr.financial_year, lr.created_at, lr.updated_at,
          lt.leave_type_name,
-         u.first_name, u.last_name, u.email
+         u.first_name, u.last_name, u.email, u.manager_id
   FROM leave_requests lr
   JOIN leave_types lt ON lr.leave_type_id = lt.id
   JOIN users u ON lr.user_id = u.id
@@ -24,6 +24,7 @@ function mapRow(row) {
     attachmentUrl: row.attachment_url,
     status: row.status,
     financialYear: row.financial_year,
+    managerId: row.manager_id,
     user: {
       firstName: row.first_name,
       lastName: row.last_name,

@@ -9,7 +9,7 @@ function formatDate(value) {
   return new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-const STATUS_FILTERS = ['', 'PENDING', 'MANAGER_APPROVED', 'ADMIN_APPROVED', 'APPROVED', 'REJECTED', 'CANCELLED'];
+const STATUS_FILTERS = ['', 'PENDING', 'ESCALATED', 'CHANGES_REQUESTED', 'MANAGER_APPROVED', 'APPROVED', 'REJECTED', 'CANCELLED'];
 const NON_CANCELLABLE = new Set(['CANCELLED', 'REJECTED']);
 
 export function MyLeaves() {

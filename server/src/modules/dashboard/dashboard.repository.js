@@ -13,7 +13,7 @@ export async function getEmployeeStats(userId) {
   const { rows: requestRows } = await pool.query(
     `SELECT
        COUNT(*) AS total_requests,
-       COUNT(*) FILTER (WHERE status = 'PENDING') AS pending,
+       COUNT(*) FILTER (WHERE status IN ('PENDING','MANAGER_APPROVED','ESCALATED','CHANGES_REQUESTED')) AS pending,
        COUNT(*) FILTER (WHERE status IN ('APPROVED','MANAGER_APPROVED','ADMIN_APPROVED')) AS approved,
        COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected,
        COUNT(*) FILTER (WHERE status = 'CANCELLED') AS cancelled
@@ -150,7 +150,7 @@ export async function getAdminStats() {
   const { rows: orgSummary } = await pool.query(
     `SELECT
        (SELECT COUNT(*) FROM users WHERE is_active = TRUE) AS total_employees,
-       COUNT(*) FILTER (WHERE lr.status = 'PENDING') AS pending_requests,
+       COUNT(*) FILTER (WHERE lr.status IN ('PENDING','MANAGER_APPROVED','ESCALATED','CHANGES_REQUESTED')) AS pending_requests,
        COUNT(*) FILTER (WHERE lr.status IN ('APPROVED','MANAGER_APPROVED','ADMIN_APPROVED')) AS approved_this_month,
        COUNT(*) FILTER (WHERE lr.status = 'REJECTED') AS rejected_this_month,
        COUNT(*) AS total_this_month

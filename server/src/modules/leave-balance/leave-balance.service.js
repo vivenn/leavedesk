@@ -88,7 +88,10 @@ export async function deductBalance(userId, leaveTypeId, financialYear, days, le
   }
 }
 
-export async function restoreBalance(userId, leaveTypeId, financialYear, days, leaveRequestId, changedBy) {
+export async function restoreBalance(
+  userId, leaveTypeId, financialYear, days, leaveRequestId, changedBy,
+  changeReason = BALANCE_CHANGE_REASON.LEAVE_CANCELLED
+) {
   const balance = await balanceRepo.findOne(userId, leaveTypeId, financialYear);
   if (!balance) return;
 
@@ -101,7 +104,7 @@ export async function restoreBalance(userId, leaveTypeId, financialYear, days, l
     leaveTypeId,
     previousBalance,
     newBalance: previousBalance + days,
-    changeReason: BALANCE_CHANGE_REASON.LEAVE_CANCELLED,
+    changeReason,
     leaveRequestId,
     changedBy
   });

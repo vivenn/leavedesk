@@ -96,7 +96,8 @@ export function LeaveTypes() {
           ) : leaveTypes.length === 0 ? (
             <p className="text-sm text-slate-400">No leave types configured.</p>
           ) : (
-            <table className="w-full text-left text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[600px] text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-xs tracking-wide text-slate-500 uppercase">
                   <th className="pb-2 font-medium">Name</th>
@@ -127,6 +128,7 @@ export function LeaveTypes() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </Card>
       </div>

@@ -17,3 +17,11 @@ body,
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
+
+@layer base {
+  /* Keep table columns from running into each other on narrow screens */
+  table th:not(:last-child),
+  table td:not(:last-child) {
+    padding-right: 1rem;
+  }
+}

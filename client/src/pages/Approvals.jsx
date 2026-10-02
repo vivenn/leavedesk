@@ -59,7 +59,7 @@ function normalize(row) {
     leaveType: row.leaveTypeName ?? row.leave_type_name,
     startDate: row.startDate ?? row.start_date,
     endDate: row.endDate ?? row.end_date,
-    numDays: row.numDays ?? row.num_days,
+    numDays: Number(row.numDays ?? row.num_days),
     reason: row.reason,
     status: row.status,
     lastRemarks: row.last_remarks,

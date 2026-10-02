@@ -92,7 +92,8 @@ export function Holidays() {
           ) : holidays.length === 0 ? (
             <p className="text-sm text-slate-400">No holidays configured.</p>
           ) : (
-            <table className="w-full text-left text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[600px] text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-xs tracking-wide text-slate-500 uppercase">
                   <th className="pb-2 font-medium">Holiday</th>
@@ -121,6 +122,7 @@ export function Holidays() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </Card>
       </div>

@@ -22,11 +22,19 @@ function formatTimestamp(value) {
   });
 }
 
+const MIDNIGHT_ISO = /^(d{4}-d{2}-d{2})T00:00:00(.000)?Z$/;
+
+function formatValue(value) {
+  if (typeof value === 'object') return JSON.stringify(value);
+  const dateOnly = typeof value === 'string' && value.match(MIDNIGHT_ISO);
+  return dateOnly ? dateOnly[1] : value;
+}
+
 function formatValues(values) {
   if (!values) return null;
   return Object.entries(values)
     .filter(([, v]) => v !== null && v !== undefined && v !== '')
-    .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+    .map(([k, v]) => `${k}: ${formatValue(v)}`)
     .join(' · ');
 }
 
@@ -136,7 +144,7 @@ export function AuditLogs() {
                     <td className="py-3 whitespace-nowrap text-slate-600">{formatTimestamp(log.createdAt)}</td>
                     <td className="py-3 text-slate-800">{log.userName || 'System'}</td>
                     <td className="py-3">
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${ACTION_TONE[log.actionType] || 'bg-slate-100 text-slate-700'}`}>
+                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap ${ACTION_TONE[log.actionType] || 'bg-slate-100 text-slate-700'}`}>
                         {humanize(log.actionType)}
                       </span>
                     </td>

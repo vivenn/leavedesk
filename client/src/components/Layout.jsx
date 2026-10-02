@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ROLES } from '../context/roles';
-import { getUnreadCount } from '../api/notifications.api';
+import { NotificationBell } from './NotificationBell';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', roles: [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.ADMIN], end: true },
@@ -23,20 +22,6 @@ const NAV_ITEMS = [
 export function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [unread, setUnread] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    getUnreadCount()
-      .then((data) => {
-        if (!cancelled) setUnread(data.count ?? data.unreadCount ?? 0);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   function handleLogout() {
     logout();
     navigate('/login', { replace: true });
@@ -77,14 +62,7 @@ export function Layout() {
             {user?.role} workspace
           </span>
           <div className="flex items-center gap-4">
-            <span className="relative text-slate-500">
-              <span aria-hidden="true">🔔</span>
-              {unread > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-semibold text-white">
-                  {unread > 9 ? '9+' : unread}
-                </span>
-              )}
-            </span>
+            <NotificationBell />
             <div className="text-right">
               <p className="text-sm font-medium text-slate-800">
                 {user?.firstName} {user?.lastName}

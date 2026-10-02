@@ -1,7 +1,7 @@
 import { http } from './http';
 
-export function getNotifications() {
-  return http.get('/notifications').then((r) => r.data.data);
+export function getNotifications(params = {}) {
+  return http.get('/notifications', { params }).then((r) => r.data.data);
 }
 
 export function getUnreadCount() {

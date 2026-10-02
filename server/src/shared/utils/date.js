@@ -22,3 +22,17 @@ export function getDatesBetween(startDate, endDate) {
   }
   return dates;
 }
+
+// Request dates arrive as UTC-midnight Date objects (Joi) or 'YYYY-MM-DD' strings
+export function formatDisplayDate(value) {
+  return new Date(value).toLocaleDateString('en-GB', {
+    timeZone: 'UTC',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+}
+
+export function formatDayCount(days) {
+  return `${days} day${Number(days) === 1 ? '' : 's'}`;
+}

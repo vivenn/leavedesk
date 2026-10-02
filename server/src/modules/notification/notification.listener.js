@@ -2,6 +2,7 @@ import eventBus from '../../shared/event-bus.js';
 import { EVENTS, NOTIFICATION_TYPE, ROLES } from '../../config/constants.js';
 import * as notifService from './notification.service.js';
 import * as userService from '../user/user.service.js';
+import { formatDisplayDate, formatDayCount } from '../../shared/utils/date.js';
 
 eventBus.on(EVENTS.LEAVE_APPLIED, async (payload) => {
   try {
@@ -11,7 +12,7 @@ eventBus.on(EVENTS.LEAVE_APPLIED, async (payload) => {
       notificationType: NOTIFICATION_TYPE.LEAVE_APPLIED,
       leaveRequestId: payload.leaveRequestId,
       title: 'New Leave Request',
-      message: `New ${payload.leaveTypeName} leave request (${payload.numDays} days) from ${payload.startDate} to ${payload.endDate}`
+      message: `New ${payload.leaveTypeName} leave request (${formatDayCount(payload.numDays)}) from ${formatDisplayDate(payload.startDate)} to ${formatDisplayDate(payload.endDate)}`
     });
   } catch (err) {
     console.error('Notification (leave:applied) failed:', err.message);
@@ -58,7 +59,7 @@ eventBus.on(EVENTS.LEAVE_ESCALATED, async (payload) => {
       notificationType: NOTIFICATION_TYPE.LEAVE_ESCALATED,
       leaveRequestId: payload.leaveRequestId,
       title: 'Leave Request Escalated',
-      message: `${payload.employeeName}'s ${payload.leaveTypeName} request (${payload.numDays} days) needs your decision${payload.remarks ? ': ' + payload.remarks : ''}`
+      message: `${payload.employeeName}'s ${payload.leaveTypeName} request (${formatDayCount(payload.numDays)}) needs your decision${payload.remarks ? ': ' + payload.remarks : ''}`
     })));
   } catch (err) {
     console.error('Notification (leave:escalated) failed:', err.message);
@@ -87,7 +88,7 @@ eventBus.on(EVENTS.LEAVE_RESUBMITTED, async (payload) => {
       notificationType: NOTIFICATION_TYPE.LEAVE_RESUBMITTED,
       leaveRequestId: payload.leaveRequestId,
       title: 'Leave Request Updated',
-      message: `Updated ${payload.leaveTypeName} request (${payload.numDays} days) from ${payload.startDate} to ${payload.endDate} is waiting for review`
+      message: `Updated ${payload.leaveTypeName} request (${formatDayCount(payload.numDays)}) from ${formatDisplayDate(payload.startDate)} to ${formatDisplayDate(payload.endDate)} is waiting for review`
     });
   } catch (err) {
     console.error('Notification (leave:resubmitted) failed:', err.message);
@@ -128,7 +129,7 @@ eventBus.on(EVENTS.BALANCE_LOW, async (payload) => {
       recipientId: payload.userId,
       notificationType: NOTIFICATION_TYPE.BALANCE_LOW,
       title: 'Low Leave Balance',
-      message: `Your ${payload.leaveTypeName} balance is low: ${payload.availableBalance} days remaining`
+      message: `Your ${payload.leaveTypeName} balance is low: ${formatDayCount(payload.availableBalance)} remaining`
     });
   } catch (err) {
     console.error('Notification (balance:low) failed:', err.message);

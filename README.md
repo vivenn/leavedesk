@@ -98,7 +98,7 @@ npm run dev                   # http://localhost:5173
 
 Sign in with the seeded administrator `admin@leavedesk.com` / `admin123` and change the password afterwards. Then create managers and employees from **Users**. Balances are initialised when a user is created, and can be managed later from **Leave Balances**.
 
-The client calls `http://localhost:5000/api` by default. Set `VITE_API_URL` to point it elsewhere.
+The client calls `http://localhost:5000/api` by default. Set `VITE_API_URL` to point it elsewhere, and set `CLIENT_ORIGIN` on the server to the client's origin so CORS allows the session cookie.
 
 ## Scripts
 
@@ -117,7 +117,7 @@ The client calls `http://localhost:5000/api` by default. Set `VITE_API_URL` to p
 cd server && npm test
 ```
 
-59 tests cover:
+61 tests cover:
 - the approval state machine
 - sandwich-leave calculation
 - date helpers
@@ -126,11 +126,11 @@ cd server && npm test
 
 ## API overview
 
-All endpoints are under `/api` and need `Authorization: Bearer <token>` except login and health.
+All endpoints are under `/api` and need an authenticated session except login, logout and health. Login sets the JWT in an httpOnly `lms_token` cookie (the browser client relies on this); non-browser clients may send `Authorization: Bearer <token>` instead.
 
 | Area | Endpoints |
 |---|---|
-| Auth | `POST /auth/login`, `POST /auth/change-password` |
+| Auth | `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `POST /auth/change-password` |
 | Leave requests | `POST /leave-requests`, `GET /leave-requests`, `GET /leave-requests/team`, `GET /leave-requests/all`, `GET /leave-requests/:id`, `PUT /leave-requests/:id`, `PATCH /leave-requests/:id/cancel` |
 | Approvals | `GET /approvals/pending`, `PATCH /approvals/:id/{approve,reject,escalate,request-changes}`, `GET /approvals/:id/history` |
 | Balances | `GET /leave-balances`, `GET/PUT /leave-balances/:userId`, `POST /leave-balances/initialize` |
@@ -144,7 +144,6 @@ Responses use one shape: `{ success, message, data, pagination? }`. Errors retur
 
 - **Notifications are in-app only.** Email and SMS channels are not implemented.
 - **No year-end automation.** Carry-forward limits and Comp-Off expiry can be configured on leave types, but no scheduled job applies them; balances are adjusted manually.
-- **The login token is kept in `localStorage`.** A production deployment should move it to an httpOnly cookie.
 - **Date handling assumes the server runs in UTC or a timezone east of UTC.**
 
 ## License

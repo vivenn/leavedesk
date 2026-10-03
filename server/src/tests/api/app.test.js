@@ -33,6 +33,17 @@ describe('API smoke tests (no database)', () => {
     expect(res.status).toBe(401);
   });
 
+  test('the httpOnly session cookie is accepted in place of a bearer token', async () => {
+    const res = await request(app).get('/api/audit-logs').set('Cookie', `lms_token=${tokenFor('Employee')}`);
+    expect(res.status).toBe(403);
+  });
+
+  test('logout clears the session cookie', async () => {
+    const res = await request(app).post('/api/auth/logout');
+    expect(res.status).toBe(200);
+    expect(res.headers['set-cookie'][0]).toMatch(/^lms_token=;.*HttpOnly/);
+  });
+
   test('employees cannot reach admin-only routes', async () => {
     const res = await request(app).get('/api/audit-logs').set('Authorization', `Bearer ${tokenFor('Employee')}`);
     expect(res.status).toBe(403);

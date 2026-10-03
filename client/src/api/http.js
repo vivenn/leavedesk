@@ -2,22 +2,14 @@ import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-export const http = axios.create({ baseURL });
-
-http.interceptors.request.use((config) => {
-  const token = localStorage.getItem('lms_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Auth lives in an httpOnly cookie set by the server, so the browser must send credentials
+export const http = axios.create({ baseURL, withCredentials: true });
 
 http.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('lms_token');
-      localStorage.removeItem('lms_user');
+    const isSessionCheck = error.config?.url === '/auth/me';
+    if (error.response?.status === 401 && !isSessionCheck) {
       if (!window.location.pathname.startsWith('/login')) {
         window.location.href = '/login';
       }

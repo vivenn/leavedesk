@@ -7,6 +7,8 @@ import * as authController from './auth.controller.js';
 const router = Router();
 
 router.post('/login', validate(loginSchema), authController.login);
+router.post('/logout', authController.logout);
+router.get('/me', authenticate, authController.me);
 router.post('/change-password', authenticate, validate(changePasswordSchema), authController.changePassword);
 
 export default router;

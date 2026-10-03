@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import requestLogger from './shared/middleware/request-logger.js';
 import { errorHandler } from './shared/middleware/error-handler.js';
 import authRoutes from './modules/auth/auth.routes.js';
@@ -25,7 +26,11 @@ import './modules/audit/audit.listener.js';
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: (process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(','),
+  credentials: true
+}));
+app.use(cookieParser());
 app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

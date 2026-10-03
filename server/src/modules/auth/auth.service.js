@@ -46,6 +46,29 @@ export async function login(email, password) {
   };
 }
 
+export async function getCurrentUser(userId) {
+  const { rows } = await pool.query(
+    `SELECT u.id, u.first_name, u.last_name, u.email, u.is_active, r.role_name
+     FROM users u
+     JOIN roles r ON u.role_id = r.id
+     WHERE u.id = $1`,
+    [userId]
+  );
+
+  if (rows.length === 0 || !rows[0].is_active) {
+    throw new UnauthorizedError('Session is no longer valid');
+  }
+
+  const user = rows[0];
+  return {
+    id: user.id,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    email: user.email,
+    role: user.role_name
+  };
+}
+
 export async function changePassword(userId, currentPassword, newPassword) {
   const { rows } = await pool.query(
     'SELECT password_hash FROM users WHERE id = $1',
